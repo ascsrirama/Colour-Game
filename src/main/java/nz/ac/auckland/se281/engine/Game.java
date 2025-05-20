@@ -5,6 +5,9 @@ import nz.ac.auckland.se281.cli.MessageCli;
 
 public class Game {
   public static String AI_NAME = "HAL-9000";
+  
+  private int numRounds; // this will track the number of rounds
+  private int currentRound; // this will track the current round number
 
   public Game() {}
 
@@ -12,11 +15,21 @@ public class Game {
     String namePlayer = options[0];
     System.out.println(namePlayer);
     MessageCli.WELCOME_PLAYER.printMessage(namePlayer);
-  
 
+    this.currentRound = 1;
+    this.numRounds = numRounds;
+    MessageCli.START_ROUND.printMessage(currentRound, numRounds);
   }
 
-  public void play() {}
+  public void play() {
+    if(currentRound <= numRounds) { 
+      MessageCli.START_ROUND.printMessage(currentRound, numRounds);
+      currentRound++;
+    } else { 
+
+    }
+
+  }
 
   public void showStats() {}
 }
