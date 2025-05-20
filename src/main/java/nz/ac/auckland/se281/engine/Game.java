@@ -2,6 +2,7 @@ package nz.ac.auckland.se281.engine;
 
 import nz.ac.auckland.se281.Main.Difficulty;
 import nz.ac.auckland.se281.cli.MessageCli;
+import nz.ac.auckland.se281.cli.Utils;
 
 public class Game {
   public static String AI_NAME = "HAL-9000";
@@ -22,6 +23,8 @@ public class Game {
   }
 
   public void play() {
+    MessageCli.ASK_HUMAN_INPUT.printMessage();
+    //String input = Utils.scanner.nextLine();
     if(currentRound <= numRounds) { 
       MessageCli.START_ROUND.printMessage(currentRound, numRounds);
       currentRound++;
