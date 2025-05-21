@@ -22,7 +22,7 @@ public class Game {
     this.currentRound = 1;
     this.numRounds = numRounds;
   }
-
+// PLAY STARTS HERE ==========================
   public void play() {
    
 
@@ -31,6 +31,13 @@ public class Game {
       return;
     }
       MessageCli.START_ROUND.printMessage(currentRound, numRounds);
+
+
+      //Power colour thing 
+      if (currentRound % 3 == 0) {
+        Colour powerColour = Colour.getRandomColourForPowerColour();
+        MessageCli.PRINT_POWER_COLOUR.printMessage(powerColour);
+      }
 
       //Boolean validInput = false;
       Colour picked = null;
@@ -58,8 +65,11 @@ public class Game {
       // Now we have a valid input, we can proceed with the game logic
       MessageCli.PRINT_INFO_MOVE.printMessage(namePlayer, picked, guess);
       currentRound++;
+
+
+
     }
-  
+// PLAY ENDS HERE ==========================
 
   public void showStats() {}
 }
