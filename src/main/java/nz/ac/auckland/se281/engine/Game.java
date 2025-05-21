@@ -7,9 +7,10 @@ import nz.ac.auckland.se281.model.Colour;
 
 
 
-public class Game {
+import java.util.ArrayList;
+import java.util.List;
 
-  private AiStrategy aiStrategy;
+public class Game {
 
   public static String AI_NAME = "HAL-9000";
   
@@ -18,9 +19,13 @@ public class Game {
   private String namePlayer; // store the player's name
   private int playerScore = 0; // track the player's score
   private int aiScore = 0; // track the AI's score
+  private List<Colour> playerHistory = new ArrayList<>(); // track player's picked colours
 
   public Game() {}
 
+  private AiStrategy aiStrategy;
+
+  
   public void newGame(Difficulty difficulty, int numRounds, String[] options) {
     this.namePlayer = options[0];
     System.out.println(namePlayer);
@@ -77,19 +82,21 @@ public class Game {
         if(picked == null || guess == null) { 
           MessageCli.INVALID_HUMAN_INPUT.printMessage();
           continue;
-        } 
-        // Valid input received, break out of the loop
+        }
         break;
       }
       // Now we have a valid input, we can proceed with the game logic
       MessageCli.PRINT_INFO_MOVE.printMessage(namePlayer, picked, guess);
 
+      // Add player's picked colour to history
+      playerHistory.add(picked);
+
       // AI's turn
       Colour aiPicked = aiStrategy.chooseColour();
-      Colour aiGuess = aiStrategy.makeGuess();
+      Colour aiGuess = aiStrategy.makeGuess(playerHistory);
 
       MessageCli.PRINT_INFO_MOVE.printMessage(AI_NAME, aiPicked, aiGuess);
-      aiStrategy.updateHistory(picked);
+      //aiStrategy.updateHistory(picked);
 
 
       // Player Score Tracking 
@@ -115,10 +122,12 @@ public class Game {
       MessageCli.PRINT_OUTCOME_ROUND.printMessage(namePlayer, playerRoundScore);
       MessageCli.PRINT_OUTCOME_ROUND.printMessage(AI_NAME, aiRoundScore);
 
-      currentRound++;
-
+      currentRound++; 
     }
-// PLAY ENDS HERE ==========================
+    
+
+    // PLAY ENDS HERE ==========================
 
   public void showStats() {}
 }
+

@@ -12,12 +12,12 @@ public class RandomStrategy implements AiStrategy {
     }
 
     @Override
-    public Colour makeGuess() {
+    public Colour makeGuess(java.util.List<Colour> history) {
+      
         lastGuess = Colour.getRandomColourForAi();
         return lastGuess;
     }
 
-    @Override
     public void updateHistory(Colour humanPick) {
         // Nothing to remember in this strategy
     }
