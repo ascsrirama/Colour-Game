@@ -44,22 +44,22 @@ public class Game {
   }
 // PLAY STARTS HERE ==========================
   public void play() {
-   
-
+  
     // Showing the rounds 
     if(currentRound > numRounds) { 
       return;
     }
       MessageCli.START_ROUND.printMessage(currentRound, numRounds);
 
-
-      //Power colour thing 
+        //Let us check for the power Round
+      Colour powerColour = null;
+      Boolean isPowerRound = false;
       if (currentRound % 3 == 0) {
-        Colour powerColour = Colour.getRandomColourForPowerColour();
+        powerColour = Colour.getRandomColourForPowerColour();
+        isPowerRound = true;
         MessageCli.PRINT_POWER_COLOUR.printMessage(powerColour);
       }
 
-      //Boolean validInput = false;
       Colour picked = null;
       Colour guess = null;
       while(true) {  
@@ -78,7 +78,6 @@ public class Game {
           MessageCli.INVALID_HUMAN_INPUT.printMessage();
           continue;
         } 
-
         // Valid input received, break out of the loop
         break;
       }
@@ -93,24 +92,11 @@ public class Game {
       aiStrategy.updateHistory(picked);
 
 
-
-
-
-      // Let us check for the power Round
-      Colour powerColour = null;
-      Boolean isPowerRound = false;
-
-      if (currentRound % 3 == 0) {
-        powerColour = Colour.getRandomColourForPowerColour();
-        isPowerRound = true;
-        MessageCli.PRINT_POWER_COLOUR.printMessage(powerColour);
-      }
-
       // Player Score Tracking 
       int playerRoundScore = 0;
       if (guess == aiPicked) {
-        playerRoundScore++;
-        if (isPowerRound && picked == powerColour) {
+        playerRoundScore += 1;
+        if (isPowerRound && guess == powerColour) {
           playerRoundScore += 2;
         }
       }
@@ -119,7 +105,7 @@ public class Game {
       //AI score tracking
       int aiRoundScore = 0;
       if(aiGuess == picked) { 
-        aiRoundScore++;
+        aiRoundScore += 1;
         if(isPowerRound && aiGuess == powerColour) { 
           aiRoundScore += 2;
         }
