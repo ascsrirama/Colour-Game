@@ -125,10 +125,11 @@ public class Game {
         }
       }
       aiScore += aiRoundScore;
+      // We need to print the outcome of the round 
+      MessageCli.PRINT_OUTCOME_ROUND.printMessage(namePlayer, playerRoundScore);
+      MessageCli.PRINT_OUTCOME_ROUND.printMessage(AI_NAME, aiRoundScore);
 
       currentRound++;
-
-
 
     }
 // PLAY ENDS HERE ==========================
