@@ -13,14 +13,13 @@ public class RandomStrategy implements AiStrategy {
 
     @Override
     public Colour makeGuess() {
-        lastGuess = Colour.getRandomColourExcluding(lastPick);
+        lastGuess = Colour.getRandomColourForAi();
         return lastGuess;
     }
 
     @Override
     public void updateHistory(Colour humanPick) {
-        // No history to update in this strategy
+        // Nothing to remember in this strategy
     }
-
   
 }
