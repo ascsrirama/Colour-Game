@@ -10,11 +10,12 @@ public class Game {
   
   private int numRounds; // this will track the number of rounds
   private int currentRound; // this will track the current round number
+  private String namePlayer; // store the player's name
 
   public Game() {}
 
   public void newGame(Difficulty difficulty, int numRounds, String[] options) {
-    String namePlayer = options[0];
+    this.namePlayer = options[0];
     System.out.println(namePlayer);
     MessageCli.WELCOME_PLAYER.printMessage(namePlayer);
 
@@ -32,27 +33,30 @@ public class Game {
       MessageCli.START_ROUND.printMessage(currentRound, numRounds);
 
       //Boolean validInput = false;
-        while(true) {  
-          MessageCli.ASK_HUMAN_INPUT.printMessage();
-          String input = Utils.scanner.nextLine();
-          String [] parts = input.split(" ");
+      Colour picked = null;
+      Colour guess = null;
+      while(true) {  
+        MessageCli.ASK_HUMAN_INPUT.printMessage();
+        String input = Utils.scanner.nextLine();
+        String [] parts = input.split(" ");
 
-          if (parts.length != 2) { 
-            MessageCli.INVALID_HUMAN_INPUT.printMessage();
+        if (parts.length != 2) { 
+          MessageCli.INVALID_HUMAN_INPUT.printMessage();
           continue;
-          }
-
-          Colour picked = Colour.fromInput(parts[0]);
-          Colour guess = Colour.fromInput(parts[1]);
-          if(picked == null || guess == null) { 
-            MessageCli.INVALID_HUMAN_INPUT.printMessage();
-            continue;
-          }
-
-          // Valid input received, break out of the loop
-          break;
         }
-        
+
+        picked = Colour.fromInput(parts[0]);
+        guess = Colour.fromInput(parts[1]);
+        if(picked == null || guess == null) { 
+          MessageCli.INVALID_HUMAN_INPUT.printMessage();
+          continue;
+        } 
+
+        // Valid input received, break out of the loop
+        break;
+      }
+      // Now we have a valid input, we can proceed with the game logic
+      MessageCli.PRINT_INFO_MOVE.printMessage(namePlayer, picked, guess);
       currentRound++;
     }
   
