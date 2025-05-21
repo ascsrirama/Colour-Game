@@ -4,9 +4,6 @@ import nz.ac.auckland.se281.Main.Difficulty;
 import nz.ac.auckland.se281.cli.MessageCli;
 import nz.ac.auckland.se281.cli.Utils;
 import nz.ac.auckland.se281.model.Colour;
-
-
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -20,6 +17,7 @@ public class Game {
   private int playerScore = 0; // track the player's score
   private int aiScore = 0; // track the AI's score
   private List<Colour> playerHistory = new ArrayList<>(); // track player's picked colours
+
 
   public Game() {}
 
@@ -39,44 +37,34 @@ public class Game {
         aiStrategy = new RandomStrategy();
         break;
       case MEDIUM:
-        // TODO: Implement MEDIUM strategy
+        aiStrategy = new AvoidLastStrategy();
         break;
       case HARD:
         // TODO: Implement HARD strategy
         break;
     }
+
     MessageCli.WELCOME_PLAYER.printMessage(namePlayer);
   }
-// PLAY STARTS HERE ==========================
+// ======================== PLAY STARTS HERE ==========================
   public void play() {
-  
-    // Showing the rounds 
-    if(currentRound > numRounds) { 
+    // Showing the rounds
+    if (currentRound > numRounds) {
       return;
     }
       MessageCli.START_ROUND.printMessage(currentRound, numRounds);
 
-        //Let us check for the power Round
-      Colour powerColour = null;
-      Boolean isPowerRound = false;
-      if (currentRound % 3 == 0) {
-        powerColour = Colour.getRandomColourForPowerColour();
-        isPowerRound = true;
-        MessageCli.PRINT_POWER_COLOUR.printMessage(powerColour);
-      }
-
-      Colour picked = null;
-      Colour guess = null;
-      while(true) {  
-        MessageCli.ASK_HUMAN_INPUT.printMessage();
-        String input = Utils.scanner.nextLine();
-        String [] parts = input.split(" ");
+    Colour picked = null;
+    Colour guess = null;
+    while (true) {
+      MessageCli.ASK_HUMAN_INPUT.printMessage();
+      String input = Utils.scanner.nextLine();
+      String[] parts = input.split(" ");
 
         if (parts.length != 2) { 
           MessageCli.INVALID_HUMAN_INPUT.printMessage();
           continue;
         }
-
         picked = Colour.fromInput(parts[0]);
         guess = Colour.fromInput(parts[1]);
         if(picked == null || guess == null) { 
@@ -85,19 +73,27 @@ public class Game {
         }
         break;
       }
+      //Let us check for the power Round
+      Colour powerColour = null;
+      Boolean isPowerRound = false;
+      if (currentRound % 3 == 0) {
+        powerColour = Colour.getRandomColourForPowerColour();
+        isPowerRound = true;
+        MessageCli.PRINT_POWER_COLOUR.printMessage(powerColour);
+      }
       // Now we have a valid input, we can proceed with the game logic
       MessageCli.PRINT_INFO_MOVE.printMessage(namePlayer, picked, guess);
 
-      // Add player's picked colour to history
-      playerHistory.add(picked);
-
+    
       // AI's turn
       Colour aiPicked = aiStrategy.chooseColour();
       Colour aiGuess = aiStrategy.makeGuess(playerHistory);
 
+      //Add player history
+      playerHistory.add(picked);
+
       MessageCli.PRINT_INFO_MOVE.printMessage(AI_NAME, aiPicked, aiGuess);
       //aiStrategy.updateHistory(picked);
-
 
       // Player Score Tracking 
       int playerRoundScore = 0;
