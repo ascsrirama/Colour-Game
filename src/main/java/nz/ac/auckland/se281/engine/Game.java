@@ -153,6 +153,20 @@ public class Game {
     lastAiRoundScore = aiRoundScore;
 
     currentRound++;
+    if(currentRound > numRounds) { 
+      showStats();
+      MessageCli.PRINT_END_GAME.printMessage();
+      if(playerScore > aiScore) { 
+        MessageCli.PRINT_WINNER_GAME.printMessage(namePlayer);
+
+      } else if ( aiScore > playerScore) { 
+        MessageCli.PRINT_WINNER_GAME.printMessage(AI_NAME);
+      } else { 
+        MessageCli.PRINT_TIE_GAME.printMessage();
+      }
+      gameRunning = false;
+
+    }
   }
 
   // PLAY ENDS HERE ==========================
