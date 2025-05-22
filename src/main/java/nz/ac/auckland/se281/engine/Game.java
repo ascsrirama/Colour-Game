@@ -157,5 +157,13 @@ public class Game {
 
   // PLAY ENDS HERE ==========================
 
-  public void showStats() {}
+  public void showStats() {
+    if(!gameRunning) { 
+      MessageCli.GAME_NOT_STARTED.printMessage();
+      return;
+    } 
+    MessageCli.PRINT_PLAYER_POINTS.printMessage(namePlayer, playerScore);
+    MessageCli.PRINT_PLAYER_POINTS.printMessage(AI_NAME, aiScore);
+
+  }
 }
