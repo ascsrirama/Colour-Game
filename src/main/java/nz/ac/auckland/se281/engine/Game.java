@@ -21,6 +21,7 @@ public class Game {
   // private String currentStrategy;
   private int lastAiRoundScore; // track the last AI round score
 
+  
   boolean gameRunning = false;
 
   private AiStrategy aiStrategy;
