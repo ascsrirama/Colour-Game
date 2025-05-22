@@ -15,6 +15,8 @@ public class LeastUsedStrategy implements AiStrategy {
   // this is the guess and it will guess what the player has chosen
   @Override
   public Colour makeGuess(List<Colour> history) {
+    //This will keep track of the number of times each colour has been used
+    // and return the least used colour
     int redCount = 0;
     int greenCount = 0;
     int blueCount = 0;

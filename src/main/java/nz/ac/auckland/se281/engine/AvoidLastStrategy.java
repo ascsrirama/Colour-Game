@@ -16,11 +16,14 @@ public class AvoidLastStrategy implements AiStrategy {
   // this will guess what the player has picked and it will also avoid the last guess
   @Override
   public Colour makeGuess(List<Colour> history) {
+
     if (history.isEmpty()) {
+      // If there is no history, pick a random colour
       lastGuess = Colour.getRandomColourForAi();
       return lastGuess;
     }
     Colour previousColour = history.get(history.size() - 1);
+    // This will pick avoid the last guess
     lastGuess = Colour.getRandomColourExcluding(previousColour);
     return lastGuess;
   }

@@ -48,8 +48,9 @@ public class StrategyFactory {
   // }
 
 
-  // This will be used to get the strategy name for the current strategy for tracking purposes
+  // This will be used to get the strategy name for the current strategy for tracking purpose
   public static String getStrategyName(AiStrategy strategy) {
+    // Checking the type based on instances	
     if (strategy instanceof RandomStrategy) {
       return "Random";
     } else if (strategy instanceof AvoidLastStrategy) {
