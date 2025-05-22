@@ -2,6 +2,8 @@ package nz.ac.auckland.se281.engine;
 
 import nz.ac.auckland.se281.Main.Difficulty;
 
+//THIS WILL SET THE STRATEGY FOR THE AI BASED ON THE DIFFICULTY	
+
 public class StrategyFactory {
 
   public static DifficultyStrategy createStrategy(Difficulty difficulty) {
