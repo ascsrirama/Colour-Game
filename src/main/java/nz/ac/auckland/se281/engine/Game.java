@@ -19,9 +19,10 @@ public class Game {
   private List<Colour> playerHistory = new ArrayList<>(); // track player's picked colours
   private Difficulty gameDifficulty; // track the difficulty level
   // private String currentStrategy;
-  private int lastAiRoundScore;
+  private int lastAiRoundScore; // track the last AI round score
 
   boolean gameRunning = false;
+
   private AiStrategy aiStrategy;
   private DifficultyStrategy difficultyStrategy;
 
