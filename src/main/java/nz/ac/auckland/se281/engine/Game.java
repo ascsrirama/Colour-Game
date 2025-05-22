@@ -17,7 +17,7 @@ public class Game {
   private int playerScore = 0; // track the player's score
   private int aiScore = 0; // track the AI's score
   private List<Colour> playerHistory = new ArrayList<>(); // track player's picked colours
-  // private Difficulty gameDifficulty; // track the difficulty level
+  private Difficulty gameDifficulty; // track the difficulty level
   // private String currentStrategy;
   private int lastAiRoundScore;
 
