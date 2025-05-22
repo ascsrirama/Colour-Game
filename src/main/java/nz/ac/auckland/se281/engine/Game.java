@@ -26,6 +26,7 @@ public class Game {
   public Game() {}
 
   private AiStrategy aiStrategy;
+  private DifficultyStrategy difficultyStrategy;
 
   public void newGame(Difficulty difficulty, int numRounds, String[] options) {
     this.namePlayer = options[0];
@@ -35,21 +36,25 @@ public class Game {
     this.numRounds = numRounds;
     this.gameDifficulty = difficulty;
 
+
+    this.difficultyStrategy = StrategyFactory.createStrategy(difficulty);
+    this.aiStrategy = difficultyStrategy.setStrategy(currentRound, lastAiRoundScore, "none");
+
     this.playerHistory.clear();
     this.playerScore = 0;
     this.aiScore = 0; 
     this.lastAiRoundScore = 0;
 
     // Set the strategy based on the difficulty
-    setStrategy(StrategyFactory.createStrategy(difficulty));
+    setStrategy(this.difficultyStrategy);
 
     MessageCli.WELCOME_PLAYER.printMessage(namePlayer);
     this.gameRunning = true;
   }
 
   // This method assigns the correponding strategy
-  private void setStrategy(AiStrategy s) {
-    aiStrategy = s;
+  private void setStrategy(DifficultyStrategy s) {
+    s.setStrategy(currentRound, lastAiRoundScore, aiStrategy == null ? "none" : aiStrategy.getClass().getSimpleName());
   }
 
   // ======================== PLAY STARTS HERE ==========================
@@ -58,6 +63,13 @@ public class Game {
       MessageCli.GAME_NOT_STARTED.printMessage();
       return;
     }
+
+
+    aiStrategy = difficultyStrategy.setStrategy(
+    currentRound,
+    lastAiRoundScore,
+    aiStrategy == null ? "none" : aiStrategy.getClass().getSimpleName()
+  );
 
 
     // Showing the rounds
@@ -97,25 +109,28 @@ public class Game {
     MessageCli.PRINT_INFO_MOVE.printMessage(namePlayer, picked, guess);
 
 
-    if(gameDifficulty == Difficulty.HARD) {
-      if (currentRound == 1 || currentRound == 2) {
-        setStrategy(new RandomStrategy());
-      } else if (currentRound == 3) { 
-        setStrategy(new LeastUsedStrategy());
-      } else if (currentRound >= 4) {
-        if (lastAiRoundScore == 0) {
-          if (aiStrategy instanceof LeastUsedStrategy) {
-            setStrategy(new AvoidLastStrategy());
-          } else {
-            setStrategy(new LeastUsedStrategy());
-          }
-        } else { 
-          if (!(aiStrategy instanceof LeastUsedStrategy) && !(aiStrategy instanceof AvoidLastStrategy)) {
-            setStrategy(new LeastUsedStrategy());
-          }
-        }
-      }
-    }
+    
+
+
+    // if(gameDifficulty == Difficulty.HARD) {
+    //   if (currentRound == 1 || currentRound == 2) {
+    //     setStrategy(new RandomStrategy());
+    //   } else if (currentRound == 3) { 
+    //     setStrategy(new LeastUsedStrategy());
+    //   } else if (currentRound >= 4) {
+    //     if (lastAiRoundScore == 0) {
+    //       if (aiStrategy instanceof LeastUsedStrategy) {
+    //         setStrategy(new AvoidLastStrategy());
+    //       } else {
+    //         setStrategy(new LeastUsedStrategy());
+    //       }
+    //     } else { 
+    //       if (!(aiStrategy instanceof LeastUsedStrategy) && !(aiStrategy instanceof AvoidLastStrategy)) {
+    //         setStrategy(new LeastUsedStrategy());
+    //       }
+    //     }
+    //   }
+    // }
 
     // AI's turn
     Colour aiPicked = aiStrategy.chooseColour();
