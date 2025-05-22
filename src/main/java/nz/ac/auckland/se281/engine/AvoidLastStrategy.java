@@ -27,10 +27,3 @@ public class AvoidLastStrategy implements AiStrategy {
 }
 
 
-/*Avoid Last Colour Strategy
-This strategy selects the AI’s own colour randomly. However, for the guessed colour, it randomly picks a colour excluding the one the human chose in the previous round.
-The idea is that the human is unlikely to choose the same colour two times in a row.
-
-For example, if in the first round the player chose RED and guessed GREEN, then in the second round, the AI will guess randomly among GREEN, BLUE, and YELLOW, but not RED.
-
-You should use the method Colour.getRandomColourExcluding(Colour exclude) (already implemented for you) to help with this. */

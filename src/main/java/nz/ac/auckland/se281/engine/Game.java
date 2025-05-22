@@ -1,58 +1,70 @@
 package nz.ac.auckland.se281.engine;
 
+import java.util.ArrayList;
+import java.util.List;
 import nz.ac.auckland.se281.Main.Difficulty;
 import nz.ac.auckland.se281.cli.MessageCli;
 import nz.ac.auckland.se281.cli.Utils;
 import nz.ac.auckland.se281.model.Colour;
-import java.util.ArrayList;
-import java.util.List;
 
 public class Game {
 
   public static String AI_NAME = "HAL-9000";
-  
+
   private int numRounds; // this will track the number of rounds
   private int currentRound; // this will track the current round number
   private String namePlayer; // store the player's name
   private int playerScore = 0; // track the player's score
   private int aiScore = 0; // track the AI's score
   private List<Colour> playerHistory = new ArrayList<>(); // track player's picked colours
+  private Difficulty gameDifficulty; // track the difficulty level
+  //private String currentStrategy;
+  private int lastAiRoundScore;
 
+  boolean gameRunning = false;
 
   public Game() {}
 
   private AiStrategy aiStrategy;
 
-  
   public void newGame(Difficulty difficulty, int numRounds, String[] options) {
     this.namePlayer = options[0];
     System.out.println(namePlayer);
-    //MessageCli.WELCOME_PLAYER.printMessage(namePlayer);
+
     this.currentRound = 1;
     this.numRounds = numRounds;
+    this.gameDifficulty = difficulty;
 
-    //choose strategy 
-    switch (difficulty) {
-      case EASY: 
-        aiStrategy = new RandomStrategy();
-        break;
-      case MEDIUM:
-        aiStrategy = new AvoidLastStrategy();
-        break;
-      case HARD:
-        // TODO: Implement HARD strategy
-        break;
-    }
+    this.playerHistory.clear();
+    this.playerScore = 0;
+    this.aiScore = 0; 
+    this.lastAiRoundScore = 0;
+
+    // Set the strategy based on the difficulty
+    setStrategy(StrategyFactory.createStrategy(difficulty));
 
     MessageCli.WELCOME_PLAYER.printMessage(namePlayer);
+    this.gameRunning = true;
   }
-// ======================== PLAY STARTS HERE ==========================
+
+  // This method assigns the correponding strategy
+  private void setStrategy(AiStrategy s) {
+    aiStrategy = s;
+  }
+
+  // ======================== PLAY STARTS HERE ==========================
   public void play() {
+    if(!gameRunning) { 
+      MessageCli.GAME_NOT_STARTED.printMessage();
+      return;
+    }
+
+
     // Showing the rounds
     if (currentRound > numRounds) {
       return;
     }
-      MessageCli.START_ROUND.printMessage(currentRound, numRounds);
+    MessageCli.START_ROUND.printMessage(currentRound, numRounds);
 
     Colour picked = null;
     Colour guess = null;
@@ -61,69 +73,89 @@ public class Game {
       String input = Utils.scanner.nextLine();
       String[] parts = input.split(" ");
 
-        if (parts.length != 2) { 
-          MessageCli.INVALID_HUMAN_INPUT.printMessage();
-          continue;
-        }
-        picked = Colour.fromInput(parts[0]);
-        guess = Colour.fromInput(parts[1]);
-        if(picked == null || guess == null) { 
-          MessageCli.INVALID_HUMAN_INPUT.printMessage();
-          continue;
-        }
-        break;
+      if (parts.length != 2) {
+        MessageCli.INVALID_HUMAN_INPUT.printMessage();
+        continue;
       }
-      //Let us check for the power Round
-      Colour powerColour = null;
-      Boolean isPowerRound = false;
-      if (currentRound % 3 == 0) {
-        powerColour = Colour.getRandomColourForPowerColour();
-        isPowerRound = true;
-        MessageCli.PRINT_POWER_COLOUR.printMessage(powerColour);
+      picked = Colour.fromInput(parts[0]);
+      guess = Colour.fromInput(parts[1]);
+      if (picked == null || guess == null) {
+        MessageCli.INVALID_HUMAN_INPUT.printMessage();
+        continue;
       }
-      // Now we have a valid input, we can proceed with the game logic
-      MessageCli.PRINT_INFO_MOVE.printMessage(namePlayer, picked, guess);
-
-    
-      // AI's turn
-      Colour aiPicked = aiStrategy.chooseColour();
-      Colour aiGuess = aiStrategy.makeGuess(playerHistory);
-
-      //Add player history
-      playerHistory.add(picked);
-
-      MessageCli.PRINT_INFO_MOVE.printMessage(AI_NAME, aiPicked, aiGuess);
-      //aiStrategy.updateHistory(picked);
-
-      // Player Score Tracking 
-      int playerRoundScore = 0;
-      if (guess == aiPicked) {
-        playerRoundScore += 1;
-        if (isPowerRound && guess == powerColour) {
-          playerRoundScore += 2;
-        }
-      }
-      playerScore += playerRoundScore;
-      
-      //AI score tracking
-      int aiRoundScore = 0;
-      if(aiGuess == picked) { 
-        aiRoundScore += 1;
-        if(isPowerRound && aiGuess == powerColour) { 
-          aiRoundScore += 2;
-        }
-      }
-      aiScore += aiRoundScore;
-      // We need to print the outcome of the round 
-      MessageCli.PRINT_OUTCOME_ROUND.printMessage(namePlayer, playerRoundScore);
-      MessageCli.PRINT_OUTCOME_ROUND.printMessage(AI_NAME, aiRoundScore);
-
-      currentRound++; 
+      break;
     }
-    
+    // Let us check for the power Round
+    Colour powerColour = null;
+    Boolean isPowerRound = false;
+    if (currentRound % 3 == 0) {
+      powerColour = Colour.getRandomColourForPowerColour();
+      isPowerRound = true;
+      MessageCli.PRINT_POWER_COLOUR.printMessage(powerColour);
+    }
+    // Now we have a valid input, we can proceed with the game logic
+    MessageCli.PRINT_INFO_MOVE.printMessage(namePlayer, picked, guess);
 
-    // PLAY ENDS HERE ==========================
+
+    if(gameDifficulty == Difficulty.HARD) {
+      if (currentRound == 1 || currentRound == 2) {
+        setStrategy(new RandomStrategy());
+      } else if (currentRound == 3) { 
+        setStrategy(new LeastUsedStrategy());
+      } else if (currentRound >= 4) {
+        if (lastAiRoundScore == 0) {
+          if (aiStrategy instanceof LeastUsedStrategy) {
+            setStrategy(new AvoidLastStrategy());
+          } else {
+            setStrategy(new LeastUsedStrategy());
+          }
+        } else { 
+          if (!(aiStrategy instanceof LeastUsedStrategy) && !(aiStrategy instanceof AvoidLastStrategy)) {
+            setStrategy(new LeastUsedStrategy());
+          }
+        }
+      }
+    }
+
+    // AI's turn
+    Colour aiPicked = aiStrategy.chooseColour();
+    Colour aiGuess = aiStrategy.makeGuess(playerHistory);
+
+    // Add player history
+    playerHistory.add(picked);
+
+    MessageCli.PRINT_INFO_MOVE.printMessage(AI_NAME, aiPicked, aiGuess);
+    // aiStrategy.updateHistory(picked);
+
+    // Player Score Tracking
+    int playerRoundScore = 0;
+    if (guess == aiPicked) {
+      playerRoundScore += 1;
+      if (isPowerRound && guess == powerColour) {
+        playerRoundScore += 2;
+      }
+    }
+    playerScore += playerRoundScore;
+
+    // AI score tracking
+    int aiRoundScore = 0;
+    if (aiGuess == picked) {
+      aiRoundScore += 1;
+      if (isPowerRound && aiGuess == powerColour) {
+        aiRoundScore += 2;
+      }
+    }
+    aiScore += aiRoundScore;
+    // We need to print the outcome of the round
+    MessageCli.PRINT_OUTCOME_ROUND.printMessage(namePlayer, playerRoundScore);
+    MessageCli.PRINT_OUTCOME_ROUND.printMessage(AI_NAME, aiRoundScore);
+
+    lastAiRoundScore = aiRoundScore;
+
+    currentRound++;
+  }
+
+  // PLAY ENDS HERE ==========================
 
   public void showStats() {}
 }
-
