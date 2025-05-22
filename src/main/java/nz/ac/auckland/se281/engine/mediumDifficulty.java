@@ -1,8 +1,6 @@
 package nz.ac.auckland.se281.engine;
 
-public class mediumDifficulty implements DifficultyStrategy {
-
-  private AiStrategy strategy;
+public class MediumDifficulty implements DifficultyStrategy {
 
   @Override
   public AiStrategy setStrategy(int round, int lastAiScore, String currentStrategy) {

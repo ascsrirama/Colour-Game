@@ -17,16 +17,15 @@ public class Game {
   private int playerScore = 0; // track the player's score
   private int aiScore = 0; // track the AI's score
   private List<Colour> playerHistory = new ArrayList<>(); // track player's picked colours
-  private Difficulty gameDifficulty; // track the difficulty level
-  //private String currentStrategy;
+  // private Difficulty gameDifficulty; // track the difficulty level
+  // private String currentStrategy;
   private int lastAiRoundScore;
 
   boolean gameRunning = false;
-
-  public Game() {}
-
   private AiStrategy aiStrategy;
   private DifficultyStrategy difficultyStrategy;
+
+  public Game() {}
 
   public void newGame(Difficulty difficulty, int numRounds, String[] options) {
     this.namePlayer = options[0];
@@ -36,13 +35,12 @@ public class Game {
     this.numRounds = numRounds;
     this.gameDifficulty = difficulty;
 
-
     this.difficultyStrategy = StrategyFactory.createStrategy(difficulty);
     this.aiStrategy = difficultyStrategy.setStrategy(currentRound, lastAiRoundScore, "none");
 
     this.playerHistory.clear();
     this.playerScore = 0;
-    this.aiScore = 0; 
+    this.aiScore = 0;
     this.lastAiRoundScore = 0;
 
     // Set the strategy based on the difficulty
@@ -54,23 +52,24 @@ public class Game {
 
   // This method assigns the correponding strategy
   private void setStrategy(DifficultyStrategy s) {
-    s.setStrategy(currentRound, lastAiRoundScore, aiStrategy == null ? "none" : aiStrategy.getClass().getSimpleName());
+    s.setStrategy(
+        currentRound,
+        lastAiRoundScore,
+        aiStrategy == null ? "none" : aiStrategy.getClass().getSimpleName());
   }
 
   // ======================== PLAY STARTS HERE ==========================
   public void play() {
-    if(!gameRunning) { 
+    if (!gameRunning) {
       MessageCli.GAME_NOT_STARTED.printMessage();
       return;
     }
 
-
-    aiStrategy = difficultyStrategy.setStrategy(
-    currentRound,
-    lastAiRoundScore,
-    aiStrategy == null ? "none" : aiStrategy.getClass().getSimpleName()
-  );
-
+    aiStrategy =
+        difficultyStrategy.setStrategy(
+            currentRound,
+            lastAiRoundScore,
+            aiStrategy == null ? "none" : aiStrategy.getClass().getSimpleName());
 
     // Showing the rounds
     if (currentRound > numRounds) {
@@ -108,30 +107,6 @@ public class Game {
     // Now we have a valid input, we can proceed with the game logic
     MessageCli.PRINT_INFO_MOVE.printMessage(namePlayer, picked, guess);
 
-
-    
-
-
-    // if(gameDifficulty == Difficulty.HARD) {
-    //   if (currentRound == 1 || currentRound == 2) {
-    //     setStrategy(new RandomStrategy());
-    //   } else if (currentRound == 3) { 
-    //     setStrategy(new LeastUsedStrategy());
-    //   } else if (currentRound >= 4) {
-    //     if (lastAiRoundScore == 0) {
-    //       if (aiStrategy instanceof LeastUsedStrategy) {
-    //         setStrategy(new AvoidLastStrategy());
-    //       } else {
-    //         setStrategy(new LeastUsedStrategy());
-    //       }
-    //     } else { 
-    //       if (!(aiStrategy instanceof LeastUsedStrategy) && !(aiStrategy instanceof AvoidLastStrategy)) {
-    //         setStrategy(new LeastUsedStrategy());
-    //       }
-    //     }
-    //   }
-    // }
-
     // AI's turn
     Colour aiPicked = aiStrategy.chooseColour();
     Colour aiGuess = aiStrategy.makeGuess(playerHistory);
@@ -140,7 +115,6 @@ public class Game {
     playerHistory.add(picked);
 
     MessageCli.PRINT_INFO_MOVE.printMessage(AI_NAME, aiPicked, aiGuess);
-    // aiStrategy.updateHistory(picked);
 
     // Player Score Tracking
     int playerRoundScore = 0;
@@ -168,31 +142,29 @@ public class Game {
     lastAiRoundScore = aiRoundScore;
 
     currentRound++;
-    if(currentRound > numRounds) { 
+    if (currentRound > numRounds) {
       showStats();
       MessageCli.PRINT_END_GAME.printMessage();
-      if(playerScore > aiScore) { 
+      if (playerScore > aiScore) {
         MessageCli.PRINT_WINNER_GAME.printMessage(namePlayer);
 
-      } else if ( aiScore > playerScore) { 
+      } else if (aiScore > playerScore) {
         MessageCli.PRINT_WINNER_GAME.printMessage(AI_NAME);
-      } else { 
+      } else {
         MessageCli.PRINT_TIE_GAME.printMessage();
       }
       gameRunning = false;
-
     }
   }
 
   // PLAY ENDS HERE ==========================
 
   public void showStats() {
-    if(!gameRunning) { 
+    if (!gameRunning) {
       MessageCli.GAME_NOT_STARTED.printMessage();
       return;
-    } 
+    }
     MessageCli.PRINT_PLAYER_POINTS.printMessage(namePlayer, playerScore);
     MessageCli.PRINT_PLAYER_POINTS.printMessage(AI_NAME, aiScore);
-
   }
 }

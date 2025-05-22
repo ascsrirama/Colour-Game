@@ -9,19 +9,20 @@ public class StrategyFactory {
     switch (difficulty) {
       case EASY:
 
-        //RandomStrategy randomStrategy = new RandomStrategy();
-        //Difficulty easyDifficulty = new easyDifficulty(); 
-        return new easyDifficulty();
+        // RandomStrategy randomStrategy = new RandomStrategy();
+        // Difficulty easyDifficulty = new easyDifficulty();
+
+        return new EasyDifficulty();
       case MEDIUM:
         // AvoidLastStrategy avoidLastStrategy = new AvoidLastStrategy();
         // return avoidLastStrategy;
-        //Difficulty easyDifficulty = new easyDifficulty(); 
-        return new mediumDifficulty();
+        // Difficulty easyDifficulty = new easyDifficulty();
+        return new MediumDifficulty();
       case HARD:
         // LeastUsedStrategy leastUsedStrategy = new LeastUsedStrategy();
         // return leastUsedStrategy;
-        //Difficulty hardDifficulty = new hardDifficulty(); 
-        return new hardDifficulty();
+        // Difficulty hardDifficulty = new hardDifficulty();
+        return new HardDifficulty();
       default:
         throw new IllegalArgumentException("Unknown difficulty: " + difficulty);
     }
@@ -44,6 +45,8 @@ public class StrategyFactory {
   //   return new LeastUsedStrategy(); // Default for round 3
   // }
 
+
+  // This will be used to get the strategy name for the current strategy for tracking purposes
   public static String getStrategyName(AiStrategy strategy) {
     if (strategy instanceof RandomStrategy) {
       return "Random";
@@ -54,5 +57,4 @@ public class StrategyFactory {
     }
     return "Unknown";
   }
-
 }
