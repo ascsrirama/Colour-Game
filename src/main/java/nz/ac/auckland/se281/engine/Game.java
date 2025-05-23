@@ -17,17 +17,14 @@ public class Game {
   private int playerScore = 0; // track the player's score
   private int aiScore = 0; // track the AI's score
   private List<Colour> playerHistory = new ArrayList<>(); // track player's picked colours
-  //private Difficulty gameDifficulty; // track the difficulty level
-  private String currentStrategy;
+  // private Difficulty gameDifficulty; // track the difficulty level
+  // private String currentStrategy;
   private int lastAiRoundScore; // track the last AI round score
 
-  
   boolean gameRunning = false;
 
   private AiStrategy aiStrategy;
   private DifficultyStrategy difficultyStrategy;
-
-  public Game() {}
 
   public void newGame(Difficulty difficulty, int numRounds, String[] options) {
     this.namePlayer = options[0];
@@ -35,7 +32,7 @@ public class Game {
 
     this.currentRound = 1;
     this.numRounds = numRounds;
-    //this.gameDifficulty = difficulty;
+    // this.gameDifficulty = difficulty;
 
     this.difficultyStrategy = StrategyFactory.createStrategy(difficulty);
     this.aiStrategy = difficultyStrategy.setStrategy(currentRound, lastAiRoundScore, "none");
