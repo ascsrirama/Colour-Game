@@ -7,6 +7,4 @@ public class MediumDifficulty implements DifficultyStrategy {
     // set the strategy to medium difficulty
     return new AvoidLastStrategy();
   }
-
-  // Add any additional methods or properties specific to medium difficulty if needed
 }

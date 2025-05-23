@@ -81,7 +81,7 @@ public class Game {
     while (true) {
       MessageCli.ASK_HUMAN_INPUT.printMessage();
       String input = Utils.scanner.nextLine();
-      String[] parts = input.split(" ");
+      String[] parts = input.trim().split(" ");
 
       if (parts.length != 2) {
         MessageCli.INVALID_HUMAN_INPUT.printMessage();
